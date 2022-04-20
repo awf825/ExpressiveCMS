@@ -1,0 +1,17 @@
+{
+  "name": "ExpressiveCMS",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "Server",
+    "client"
+  ],
+  "scripts": {
+    "start": "concurrently \"yarn workspace Server start\" \"yarn workspace client start\""
+  },
+  "devDependencies": {
+    "concurrently": "^7.1.0"
+  }
+}
