@@ -8,24 +8,18 @@ const app = express();
 
 const port = 3200;
 
-// const MongoUrl = process.env.MONGODB_URL;
+const mysql = require('mysql')
+const connection = mysql.createConnection({
+  host: "localhost",
+  user: "user",
+  password: "password",
+  port: 8889,
+  database: "expressive-cms"
+})
 
-try {
-	// mongoose.connect( url, {useNewUrlParser: true, useUnifiedTopology: true }); 
-	mongoose.connect( MongoUrl, { useNewUrlParser: true }); 
+connection.connect()
 
-	const connection = mongoose.connection;
-
-	connection.once("open", function() {
-	  console.log("MongoDB database connection established successfully");
-	});
-} catch (error) { 
-	console.log("could not connect, error:", error);    
-}
-
-const allowedOrigins = [
-	'http://localhost:3000'
-]
+const allowedOrigins = [ 'http://localhost:3000' ];
 
 app.use(cors({
 	origin: function(origin, callback) {
@@ -43,9 +37,19 @@ app.use(cors({
 app.use(bodyParser.json({ type: '*/*' }));
 
 app.get("/", async function(req, res) {
-    res.send({ "message": "bigjoe" })
+	connection.query('SELECT * FROM content', (err, rows, fields) => {
+		if (err) throw err
+		r = rows[0] 
+		res.send({ 
+			"author": r.author,
+			"title": r.title,
+			"content": r.content
+		})
+	})
 })
 
 app.listen(port, () => {
     console.log(`Server running on ${port}`);
 })
+
+// connection.end()
