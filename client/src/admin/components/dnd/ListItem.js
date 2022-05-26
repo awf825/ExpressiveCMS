@@ -44,7 +44,7 @@ export const ListItem = ({ text, index, moveListItem, addListItem, pets }) => {
                 return p.name
             })
             if (!petNames.includes(item.name)) {
-                addListItem(dragIndex, hoverIndex)
+                addListItem(dragIndex, hoverIndex, item)
             }
             //addListItem(dragIndex)
 

@@ -29,12 +29,13 @@ export default function List({ names }) {
     )
 
     const addListItem = useCallback(
-        (dragIndex, hoverItem) => {
-            debugger
+        (dragIndex, hoverItem, item) => {
+            // debugger
             setPets(pets => {
                 const updatedPets = [...pets]
-                updatedPets[updatedPets.length+1] = updatedPets[dragIndex]
-                updatedPets[dragIndex] = hoverItem
+                updatedPets.push({ id: updatedPets.length+1, name: item.name })
+                // updatedPets[dragIndex] = hoverItem
+                return updatedPets
             })
         },
         [pets],
