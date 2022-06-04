@@ -37,7 +37,17 @@ export const AdminFunnels = () => {
         <div>
             <div style={{ display: showForm  ? 'none' : 'block'}}>
                 <button onClick={newForm} type="submit">NEW FORM</button>
-                <p>SHOW ALL CREATED FORMS HERE, WITH WHETHER OR NOT THEY'RE SUBS OR CAMPAIGNS, OTHER METADATA INCLUDING DELETE AND EDIT BUTTONS</p>
+                <p>SHOW ALL CREATED FORMS HERE, WITH WHETHER OR NOT THEY'RE SUBS OR CAMPAIGNS, OTHER METADATA INCLUDING DELETE AND EDIT BUTTONS
+
+                    CREATE FUNNELS FOR THE FUNNELS? <br/>
+                    NEED BIG WRAPPER COMPONENT TO HOLD THE STATE OF:<br/><br/>
+
+                    QUESTIONS ANSWERED<br/>
+                    ANSWERS TO THOSE QUESTIONS<br/>
+                    QUESTIONS STILL TO COME<br/>
+
+                    ALONG WITH THOSE, ADD THE FIELDS SELECTED TO BE ON THE FORM. <br/>
+                </p>
             </div>
 
             <div style={{ display: showForm ? 'block' : 'none'}}>
