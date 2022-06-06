@@ -48,6 +48,50 @@ app.get("/", async function(req, res) {
 	})
 })
 
+app.get("/admin/funnels/panes/:id", async function(req, res) {
+	//queryString = `SELECT FROM panels WHERE panels.id = ${req.params.id}`
+	const queryString = 'SELECT * FROM panels JOIN panels_fields pf ON panels.id = pf.panel_id JOIN panels_fields_options pfo ON pf.id = pfo.panel_field_id WHERE panels.id = '+req.params.id
+	connection.query(queryString, (err, rows, fields) => {
+		console.log(rows)
+		if (err) throw err
+		res.send({
+			name:rows[0].name,
+			ordering: rows[0].ordering,
+			cta: rows[0].cta,
+			type: rows[0].type,
+			label: rows[0].label,
+			fields: rows.map(r => {
+				return {
+					text: r.text,
+					value: r.value
+				}
+			})
+		})
+	})
+})
+
+app.get("/admin/funnels/paneByOrdering", async function(req, res) {
+	const queryString = 'SELECT * FROM panels JOIN panels_fields pf ON panels.id = pf.panel_id JOIN panels_fields_options pfo ON pf.id = pfo.panel_field_id WHERE panels.ordering = '+req.query.ordering
+	console.log(queryString)
+	connection.query(queryString, (err, rows, fields) => {
+		console.log(rows)
+		if (err) throw err
+		res.send({
+			name:rows[0].name,
+			ordering: rows[0].ordering,
+			cta: rows[0].cta,
+			type: rows[0].type,
+			label: rows[0].label,
+			fields: rows.map(r => {
+				return {
+					text: r.text,
+					value: r.value
+				}
+			})
+		})
+	})
+})
+
 app.listen(port, () => {
     console.log(`Server running on ${port}`);
 })
