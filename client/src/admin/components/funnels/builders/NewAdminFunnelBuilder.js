@@ -4,6 +4,7 @@ import React, {
     useRef 
 } from 'react';
 import AdminSelect from '../fields/AdminSelect';
+import AdminMultiSelect from '../fields/AdminMultiSelect';
 import axios from 'axios'
 
 /*
@@ -92,7 +93,8 @@ export default function NewAdminFunnelBuilder() {
                 type: resp.data.type,
                 cta: resp.data.cta,
                 fields: resp.data.fields,
-                label: resp.data.label
+                label: resp.data.label,
+                ordering: resp.data.ordering
             }
 
             setPane(newPane)
@@ -105,7 +107,13 @@ export default function NewAdminFunnelBuilder() {
                     })
                     break;
                     case "multiselect":
-                        break;
+                    // HERE IS WHERE THE ORDE STARTS TO BREAK DOWN
+                    
+                    // setForm({
+                    //     ...form,
+                    //     [paneRef.current.name]: selectedValueRef.current
+                    // })
+                    break;
                     default:
                         break;
             }
@@ -122,7 +130,11 @@ export default function NewAdminFunnelBuilder() {
                     break;
                 case "multiselect":
                     setOutlet(
-                        <div>GIVIN UP DA P FUNK</div>
+                        // <div>GIVIN UP DA P FUNK</div>
+                        <AdminMultiSelect 
+                            pane={newPane}
+                            ontoNextPane={ontoNextPane}
+                        />
                     )
                     break;
                 default:
