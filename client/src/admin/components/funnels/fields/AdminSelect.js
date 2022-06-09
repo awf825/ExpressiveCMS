@@ -1,6 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { NewAdminFunnelContext } from '../contexts/NewAdminFunnelContext';
+import {
+    setFunnelType
+} from '../reducers/NewAdminFunnelReducer.js'
 
-export default function AdminSelect({ pane, onSelect, ontoNextPane }) {
+
+export default function AdminSelect({ pane, ontoNextPane }) {
+    const [newAdminFunnelState, dispatch] = useContext(NewAdminFunnelContext);
+    const onSelect = (e) => {
+        // dispatch(selectFunnelType(e.target.value))
+        dispatch(setFunnelType(e.target.value))
+    }
     return (
         <div id={pane.name}>
              <label htmlFor={pane.name}>{pane.label}</label> 

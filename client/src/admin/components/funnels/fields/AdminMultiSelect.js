@@ -1,10 +1,17 @@
 import React, { 
     useState,
     useRef,
-    useEffect
+    useEffect,
+    useContext
 } from 'react';
 
+import { NewAdminFunnelContext } from '../contexts/NewAdminFunnelContext';
+import {
+    addToForm
+} from '../reducers/NewAdminFunnelReducer.js'
+
 export default function AdminMultiSelect({ pane, ontoNextPane }) {
+    const [newAdminFunnelState, dispatch] = useContext(NewAdminFunnelContext)
     const [stage, setStage] = useState([])
     const [selectedValue, setSelectedValue] = useState()
 
@@ -20,13 +27,16 @@ export default function AdminMultiSelect({ pane, ontoNextPane }) {
 
     const addToStage = (e) => {
         if (selectedValue !== '' && !stage.includes(selectedValue)) {
-            console.log('addToStage, selectedValue: ', selectedValue); 
             setStage([
                 ...stage,
                 selectedValue
             ])
+            const toDispatch = {
+                name: pane.name,
+                value: selectedValue
+            }
+            dispatch(addToForm(toDispatch))
             setSelectedValue("")
-            //setStage()
         }
     }
 

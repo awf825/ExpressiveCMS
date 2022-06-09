@@ -1,18 +1,18 @@
 import React, { 
     useEffect, 
     useState, 
-    useRef 
+    useRef,
+    useReducer
 } from 'react';
 import AdminSelect from '../fields/AdminSelect';
 import AdminMultiSelect from '../fields/AdminMultiSelect';
 import axios from 'axios'
-
-/*
-    INITIAL STATE: will essentially be a clean slate, a nice juicy object that will be filled, or not filled, with admin answers to questions i.e is this a campaign or a subscription? Is this form collecting a profile? 
-
-    TODO:
-        Lift all of this state to a reducer/context scheme
-*/
+import { NewAdminFunnelContext  } from '../contexts/NewAdminFunnelContext';
+import { 
+    NewAdminFunnelReducer,
+    setCurrentPane,
+    setCurrentOutlet
+} from '../reducers/NewAdminFunnelReducer';
 
 const initialFormState = {
     funnelType: "", /* to start, subscription or campaign? */
@@ -24,6 +24,16 @@ const initialFormState = {
         isPaymentGateway: false,
         profileUpFront: false /* Do we want this to be a "we need your profile first", like in the store, or a simple email capture, where the "profile" is truncated?*/
     }
+}
+
+const initialPaneState = {
+    id: null,
+    name: "",
+    type: "",
+    cta: "",
+    fields: [],
+    label: "",
+    ordering: ""
 }
 
 export default function NewAdminFunnelBuilder() {
@@ -40,6 +50,16 @@ export default function NewAdminFunnelBuilder() {
     const [outlet, setOutlet] = useState(null)
     const paneRef = useRef(null)
     const selectedValueRef = useRef("")
+
+    const [newAdminFunnelState, dispatch] = useReducer(
+        NewAdminFunnelReducer,
+        {
+          selectedFunnelType: "",
+          currentPane: initialPaneState,
+          form: initialFormState,
+          currentOutlet: null
+        }
+      )
     
     /*
         In the side effect that hits when the component renders, we want to grab the first admin pane, which will always be the same: sub or campaign?, id 1. 
@@ -62,15 +82,15 @@ export default function NewAdminFunnelBuilder() {
             }
 
             setPane(newPane)
-            paneRef.current = newPane
-
-            setOutlet(
+            dispatch(setCurrentPane(newPane))
+            dispatch(setCurrentOutlet(
                 <AdminSelect 
                     pane={newPane}
-                    onSelect={onSelect}
                     ontoNextPane={ontoNextPane}
                 />
-            )
+            ))
+
+            paneRef.current = newPane
         })
     }, [])
 
@@ -98,44 +118,24 @@ export default function NewAdminFunnelBuilder() {
             }
 
             setPane(newPane)
-
-            switch(paneRef.current.type) {
-                case "select":
-                    setForm({
-                        ...form,
-                        [paneRef.current.name]: selectedValueRef.current
-                    })
-                    break;
-                    case "multiselect":
-                    // HERE IS WHERE THE ORDE STARTS TO BREAK DOWN
-                    
-                    // setForm({
-                    //     ...form,
-                    //     [paneRef.current.name]: selectedValueRef.current
-                    // })
-                    break;
-                    default:
-                        break;
-            }
+            dispatch(setCurrentPane(newPane))
 
             switch(newPane.type) {
                 case "select":
-                    setOutlet(
+                    dispatch(setCurrentOutlet(
                         <AdminSelect 
                             pane={newPane}
-                            onSelect={onSelect}
                             ontoNextPane={ontoNextPane}
                         />
-                    )
+                    ))
                     break;
                 case "multiselect":
-                    setOutlet(
-                        // <div>GIVIN UP DA P FUNK</div>
+                    dispatch(setCurrentOutlet(
                         <AdminMultiSelect 
                             pane={newPane}
                             ontoNextPane={ontoNextPane}
                         />
-                    )
+                    ))
                     break;
                 default:
                     break;
@@ -145,15 +145,11 @@ export default function NewAdminFunnelBuilder() {
         })
     }
 
-    const onSelect = (e) => {
-        // setSelectedValue(e.target.value)
-        selectedValueRef.current = e.target.value
-    }
-    // const [selectedValue, setSelectedValue] = useState("");
-
     return (
-        <>  
-            {outlet}
-        </>
+        <NewAdminFunnelContext.Provider value={[newAdminFunnelState, dispatch]}> 
+            <>  
+                {newAdminFunnelState && newAdminFunnelState.currentOutlet}
+            </>
+        </NewAdminFunnelContext.Provider>
     )
 }
